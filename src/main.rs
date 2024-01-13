@@ -1,17 +1,28 @@
+use std::collections::hash_map::DefaultHasher;
 use std::env;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::path::Path;
 use std::str;
+
+fn hash_data(data: &Vec<u8>) -> u64 {
+    let mut hasher = DefaultHasher::new();
+    data.hash(&mut hasher);
+    return hasher.finish();
+}
 
 fn read_file(filepath: &Path) -> () {
     let data = fs::read(filepath).unwrap();
     let _string = str::from_utf8(&data).unwrap();
     if let Ok(metadata) = filepath.metadata() {
+        let hash = hash_data(&data);
+
         println!(
             " name : {} len:{}",
             filepath.to_str().unwrap(),
             metadata.len()
-        )
+        );
+        println!("Hash is {:}!", hash);
     }
     /*
         println!(
