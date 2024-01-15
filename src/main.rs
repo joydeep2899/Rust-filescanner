@@ -18,8 +18,9 @@ fn read_file(filepath: &Path) -> () {
         let hash = hash_data(&data);
 
         println!(
-            " name : {} len:{}",
+            "\n\nFile Name : {} \nFull Path: {} \nFile Size:{}",
             filepath.to_str().unwrap(),
+            fs::canonicalize(filepath).unwrap().display(),
             metadata.len()
         );
         println!("Hash is {:}!", hash);
