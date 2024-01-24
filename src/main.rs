@@ -3,7 +3,7 @@ use std::env;
 use std::fs;
 use std::hash::{Hash, Hasher};
 use std::path::Path;
-use std::str;
+use std::time::Instant;
 
 fn hash_data(data: &Vec<u8>) -> u64 {
     let mut hasher = DefaultHasher::new();
@@ -13,7 +13,6 @@ fn hash_data(data: &Vec<u8>) -> u64 {
 
 fn read_file(filepath: &Path) -> () {
     let data = fs::read(filepath).unwrap();
-    let _string = str::from_utf8(&data).unwrap();
     if let Ok(metadata) = filepath.metadata() {
         let hash = hash_data(&data);
 
@@ -23,16 +22,8 @@ fn read_file(filepath: &Path) -> () {
             fs::canonicalize(filepath).unwrap().display(),
             metadata.len()
         );
-        println!("Hash is {:}!", hash);
+        println!("Hash is {:}", hash);
     }
-    /*
-        println!(
-            "Data from {}: size:{}\n{} ",
-            filepath.to_str().unwrap(),
-            string.bytes().count(),
-            string
-        );
-    */
 }
 
 fn read_dir(dir_path: &Path) {
@@ -44,7 +35,7 @@ fn read_dir(dir_path: &Path) {
                     if path.is_dir() {
                         if let Ok(metadata) = path.metadata() {
                             println!(
-                                " Dir Name : {} Dir Size:{}",
+                                "Dir Name : {} Dir Size:{}",
                                 path.to_str().unwrap(),
                                 metadata.len()
                             )
@@ -63,12 +54,12 @@ fn read_dir(dir_path: &Path) {
 }
 
 fn main() {
-    //    read_file(Path::new("abc.txt"));
     let env_args = env::args();
     let mut n_args = env_args.count();
     let mut args: Vec<String> = env::args().collect();
     args.remove(0);
     n_args -= 1;
+    let now = Instant::now();
     if n_args > 0 {
         for arg in args {
             read_dir(Path::new(&arg));
@@ -76,4 +67,9 @@ fn main() {
     } else {
         println!("pass atleast 1 argument")
     }
+    let elapsed_time = now.elapsed();
+    println!(
+        "Running Scan took {} milli seconds.",
+        elapsed_time.as_millis()
+    );
 }
