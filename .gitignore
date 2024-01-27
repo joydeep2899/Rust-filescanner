@@ -1,3 +1,4 @@
 *.o
+.DS_Store
 target/debug/
 target/release/
